@@ -1,15 +1,23 @@
 <script setup>
-import {ref} from 'vue'
-import {obterDados} from '../services/api'
+import { ref } from 'vue'
+import { obterDados } from '../services/api'
+// console.log('Olá')
 
 const carros = ref([])
-
+// console.log(carros)
 obterDados().then(dados => {
+  console.log('DADOS RECEBIDOS:', dados)
+
   carros.value = dados.carros
 
-  console.log(carros.value);
-  
+  console.log('CARROS:', carros.value)
 })
+
+// obterDados().then(dados => {
+//   carros.value = dados.carros
+//   console.log(carros.value);
+
+// })
 
 
 defineProps({
@@ -24,8 +32,12 @@ defineProps({
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h3>
-      Olá
-      <a href="https://vite.dev/" target="_blank" rel="noopener">  </a> +
+      <p>Total de carros: {{ carros.length }}</p>
+
+      <div v-if="carros.length">
+        {{ carros[0].marca }}
+      </div>
+      <a href="https://vite.dev/" target="_blank" rel="noopener"> </a> +
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
     </h3>
   </div>
@@ -49,6 +61,7 @@ h3 {
 }
 
 @media (min-width: 1024px) {
+
   .greetings h1,
   .greetings h3 {
     text-align: left;
