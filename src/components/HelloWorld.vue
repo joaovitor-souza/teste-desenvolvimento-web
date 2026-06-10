@@ -1,4 +1,17 @@
 <script setup>
+import {ref} from 'vue'
+import {obterDados} from '../services/api'
+
+const carros = ref([])
+
+obterDados().then(dados => {
+  carros.value = dados.carros
+
+  console.log(carros.value);
+  
+})
+
+
 defineProps({
   msg: {
     type: String,
@@ -11,8 +24,8 @@ defineProps({
   <div class="greetings">
     <h1 class="green">{{ msg }}</h1>
     <h3>
-      You’ve successfully created a project with
-      <a href="https://vite.dev/" target="_blank" rel="noopener">Vite</a> +
+      Olá
+      <a href="https://vite.dev/" target="_blank" rel="noopener">  </a> +
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
     </h3>
   </div>
