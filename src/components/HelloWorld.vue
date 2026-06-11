@@ -4,42 +4,129 @@ import { obterDados } from '../services/api'
 // console.log('Olá')
 
 const carros = ref([])
+const motores = ref([])
 // console.log(carros)
 obterDados().then(dados => {
-  console.log('DADOS RECEBIDOS:', dados)
-
   carros.value = dados.carros
-
-  console.log('CARROS:', carros.value)
+  motores.value = dados.motores
 })
 
-// obterDados().then(dados => {
-//   carros.value = dados.carros
-//   console.log(carros.value);
+function getMotor(motor_id) {
+  return motores.value.find(motor => motor.id === motor_id)
+}
 
-// })
+function excluirCarro(carro) {
+  carros.value = carros.value.filter(
+    item => item.id !== carro.id
+  )
 
+  motores.value = motores.value.filter(
+    motor => motor.id !== carro.motor_id
+  )
+}
+// inclusao
 
-defineProps({
-  msg: {
-    type: String,
-    required: true,
-  },
-})
+const marca = ref('')
+const modelo = ref('')
+const cor = ref('')
+
+const litragem = ref('')
+const cilindros = ref('')
+
+function adicionarCarro() {
+  if (
+    !marca.value ||
+    !modelo.value ||
+    !cor.value ||
+    !litragem.value ||
+    !cilindros.value
+  ) {
+    alert('Preencha todos os campos')
+    return
+  }
+  const novoMotor = {
+    id: motores.value.length + 1,
+    posicionamento_cilindros: 'linha',
+    cilindros: Number(cilindros.value),
+    litragem: Number(litragem.value),
+    observacao: null
+  }
+
+  motores.value.push(novoMotor)
+
+  const novoCarro = {
+    id: carros.value.length + 1,
+    marca: marca.value,
+    modelo: modelo.value,
+    cor: cor.value,
+    motor_id: novoMotor.id
+  }
+
+  carros.value.push(novoCarro)
+  marca.value = ''
+  modelo.value = ''
+  cor.value = ''
+
+  litragem.value = ''
+  cilindros.value = ''
+}
+
 </script>
 
 <template>
   <div class="greetings">
-    <h1 class="green">{{ msg }}</h1>
-    <h3>
-      <p>Total de carros: {{ carros.length }}</p>
+    <div>
+      <div>
+        <input v-model="marca" placeholder="Marca" required>
 
-      <div v-if="carros.length">
-        {{ carros[0].marca }}
+        <input v-model="modelo" placeholder="Modelo" required>
+
+        <input v-model="cor" placeholder="Cor" required>
+
+        <input v-model="litragem" placeholder="Litragem" required>
+
+        <input v-model="cilindros" placeholder="Cilindros" required>
+
+        <button @click="adicionarCarro">
+          Adicionar
+        </button>
       </div>
-      <a href="https://vite.dev/" target="_blank" rel="noopener"> </a> +
-      <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
-    </h3>
+      <table>
+        <thead>
+          <tr>
+            <th>Marca</th>
+            <th>Modelo</th>
+            <th>Cor</th>
+            <th>Motor</th>
+            <th>Ações</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          <tr v-for="carro in carros" :key="carro.id">
+            <td>
+              {{ carro.marca }}
+            </td>
+            <td>
+              {{ carro.modelo }}
+            </td>
+            <td>
+              {{ carro.cor }}
+            </td>
+            <td v-if="getMotor(carro.motor_id)">
+              Motor: {{ getMotor(carro.motor_id).litragem }}cc -
+              {{ getMotor(carro.motor_id).cilindros }} cilindros
+            </td>
+            <td>
+              <button @click="excluirCarro(carro)">
+                Excluir
+              </button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+
+    </div>
   </div>
 </template>
 
